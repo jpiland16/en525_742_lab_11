@@ -52,26 +52,32 @@ void create_synthetic_packet(udp_packet_t* output) {
     counter++;
 }
 
-// INFO: This function was modified from the original: https://gist.github.com/jimfinnis/6823802
-bool udp_send(const void* data, int data_len, const char* host, int port) {
-    sockaddr_in_t server_address;
+bool udp_setup(int* out_fd, sockaddr_in_t* out_server_address, const char* host, int port) {
     int fd = socket(AF_INET,SOCK_DGRAM,0);
-    if(fd<0){
+    if(fd < 0){
         perror("cannot open socket");
         return false;
     }
     
-    bzero(&server_address, sizeof(server_address));
-    server_address.sin_family = AF_INET;
-    server_address.sin_addr.s_addr = inet_addr(host);
-    server_address.sin_port = htons(port);
+    *out_fd = fd;
+    bzero(out_server_address, sizeof(*out_server_address));
+    out_server_address->sin_family = AF_INET;
+    out_server_address->sin_addr.s_addr = inet_addr(host);
+    out_server_address->sin_port = htons(port);
+    return true;
+}
+
+bool udp_send(const void* data, int data_len, sockaddr_in_t server_address, int fd) {
     if (sendto(fd, data, data_len, 0, (sockaddr_t*) &server_address, sizeof(server_address)) < 0){
         perror("cannot send message");
         close(fd);
         return false;
     }
-    close(fd);
     return true;
+}
+
+void udp_shutdown(int fd) {
+    close(fd);
 }
 
 int main(int argc, char* argv[]) {
@@ -90,11 +96,29 @@ int main(int argc, char* argv[]) {
 
     int success_count = 0;
 
+    sockaddr_in_t server_address;
+    int fd;
+    
+    if (!(udp_setup(&fd, &server_address, destination_address, PORT))) {
+        puts("UDP setup failure!");
+        return EXIT_FAILURE;
+    }
+
     for (int i = 0; i < number_of_packets; i++) {
         create_synthetic_packet(&packet);
-        bool result_success = udp_send((void* ) &packet, sizeof(udp_packet_t), destination_address, PORT);
-        if (result_success) success_count++;
+        bool result_success = udp_send((void* ) &packet, sizeof(udp_packet_t), server_address, fd);
+        if (result_success) {
+            success_count++;
+        } else {
+            // retry setting up the socket
+            if (!(udp_setup(&fd, &server_address, destination_address, PORT))) {
+                puts("UDP setup failure!");
+                return EXIT_FAILURE;
+            }
+        }
     }
+
+    udp_shutdown(fd);
 
     printf("%d packet(s) sent successfully, %d failures\n", success_count, number_of_packets - success_count);
 
