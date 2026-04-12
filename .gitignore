@@ -1,0 +1,4 @@
+*.pdf
+*.tgz
+.mypy_cache
+.vscode
