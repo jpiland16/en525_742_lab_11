@@ -43,10 +43,10 @@ void create_synthetic_packet(udp_packet_t* output) {
 
     for (int i = 0; i < (DATA_LENGTH / 2); i++) {
         // Create some arbitrary data based on the counter
-        output->data[i * 2    ].real = ((counter >>  0) & 0xF) | ('J'       << 8);
-        output->data[i * 2    ].imag = ((counter >>  8) & 0xF) | ('C'       << 8);
-        output->data[i * 2 + 1].real = ((counter >> 16) & 0xF) | ('P'       << 8);
-        output->data[i * 2 + 1].imag = ((counter >> 24) & 0xF) | ((i & 0xF) << 8);
+        output->data[i * 2    ].real = ((counter >>  0) & 0xFF) | ('J'        << 8);
+        output->data[i * 2    ].imag = ((counter >>  8) & 0xFF) | ('C'        << 8);
+        output->data[i * 2 + 1].real = ((counter >> 16) & 0xFF) | ('P'        << 8);
+        output->data[i * 2 + 1].imag = ((counter >> 24) & 0xFF) | ((i & 0xFF) << 8);
     }
 
     counter++;
