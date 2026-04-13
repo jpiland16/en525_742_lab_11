@@ -1,0 +1,28 @@
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/libsrc/llfifo/src/xllfifo.* .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/libsrc/llfifo/src/ .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xstatus.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xenv.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xil_types.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xenv_standalone.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/bspconfig.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xenv_standalone.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xmem_config.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xparameters_ps.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xparameters.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xdebug.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xil_assert.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xil_printf.h.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xil_printf.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xllfifo_hw.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xil_io.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xpseudo_asm.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xreg_cortexa9.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/include/xpseudo_asm_gcc.h .
+cp /home/jpiland/jhu/2026-01/en.525.742/lab03/vitis/platform1/zynq_fsbl/zynq_fsbl_bsp/libsrc/standalone/src/common/xil_assert.c .
+
+# Then edit line 338 of xparameters.h to have XPS_BOARD_ZYBO_Z7_20 instead of XPS_BOARD_ZYBO-Z7-20
+# Then edit L112,113,117,118 to update the correct address
+
+# sudo dnf copr enable lantw44/arm-linux-gnueabihf-toolchain
+# sudo dnf install arm-linux-gnueabihf-gcc arm-linux-gnueabihf-glibc
+# CFLAGS="-D__NR_sigreturn=119" ../configure   --host=arm-linux-gnueabihf   --disable-gdb   --disable-binutils   --disable-ld   --disable-gold   --disable-sim   --disable-nls   --enable-gdbserver   CC="arm-linux-gnueabihf-gcc  --sysroot=/tools/Xilinx/2025.2/gnu/aarch32/lin/gcc-arm-linux-gnueabi/cortexa9t2hf-neon-amd-linux-gnueabi"
