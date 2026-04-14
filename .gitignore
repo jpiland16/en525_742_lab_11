@@ -2,3 +2,5 @@
 *.tgz
 .mypy_cache
 .vscode
+__pycache__
+en525_742_radio_periph_lab/
