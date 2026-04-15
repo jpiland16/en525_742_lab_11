@@ -76,7 +76,7 @@ int main(int argc, char* argv[]) {
     unsigned int single_sample;
     
     while (num_words_read < num_words_to_read) {
-        if (((XLlFifo_iRxGetLen(&fifo) & 0x3FFFF) >> 2) > 0) {
+        if (((XLlFifo_iRxGetLen(&fifo) & 0x3FFFFF) >> 2) > 0) {
             // There are bytes available in the FIFO, read them now
             XLlFifo_Read(&fifo, &single_sample, 4);
             num_words_read++;
