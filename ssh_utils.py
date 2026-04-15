@@ -10,6 +10,9 @@ if os.getcwd() != DIR:
 PASSWORD = "student"
 REMOTE_HOST = "student@192.168.2.101"
 
+def sudo(command: str):
+    return f" echo {PASSWORD} | sudo -S {command} "
+
 def run_command(command: str, wait_for_result: bool = True, show_stderr: bool = False) -> int | subprocess.Popen:
     command_split = shlex.split(command)
     additional_kwargs: Dict[str, Any] = {}
@@ -25,3 +28,6 @@ def run_sshpass_command(command: str, wait_for_result: bool = True, show_stderr:
 
 def copy_file_to_remote(source: str, dest: str = "", wait_for_result: bool = True, show_stderr: bool = True) -> int | subprocess.Popen:
     return run_command(f"sshpass -p {PASSWORD} scp {source} {REMOTE_HOST}:{dest}", wait_for_result, show_stderr)
+
+def copy_file_from_remote(source: str, dest: str = "", wait_for_result: bool = True, show_stderr: bool = True) -> int | subprocess.Popen:
+    return run_command(f"sshpass -p {PASSWORD} scp {REMOTE_HOST}:{source} {dest}", wait_for_result, show_stderr)

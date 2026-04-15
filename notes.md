@@ -28,3 +28,9 @@ scp ./vivado/radio_periph_lab.runs/impl_1/design_1_wrapper.bit.bin student@192.1
 fpgautil -b myfile.bit.bin
 cp /run/media/boot-mmcblk0p1/config_codec.sh .
 ```
+
+## Firewall (Fedora)
+
+```sh
+sudo firewall-cmd --add-port=25344/udp
+```

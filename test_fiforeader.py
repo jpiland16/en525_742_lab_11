@@ -1,8 +1,5 @@
 import glob
-from ssh_utils import run_sshpass_command, copy_file_to_remote, PASSWORD
-
-def sudo(command: str):
-    return f" echo {PASSWORD} | sudo -S {command} "
+from ssh_utils import run_sshpass_command, copy_file_to_remote, sudo
 
 def main():
     copy_file_to_remote("web/cgi-bin/design_1_wrapper.bit.bin")
