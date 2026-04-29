@@ -9,5 +9,7 @@ echo "configuring Codec...<br>"
 ./configure_codec.sh
 echo "</p>"
 echo "starting UDP Streamer Program...<br>"
-./stream_udp_data 192.168.2.100 > /dev/null 2>&1 &
+REMOTE_IP=$(echo $REMOTE_ADDR | cut -d: -f4 | cut -d\] -f1)
+echo "Your IP address is: $REMOTE_IP (this is where UDP will stream to)"
+./stream_udp_data $REMOTE_IP > /dev/null 2>&1 &
 echo "<p><em>All Done!</em></p>" 

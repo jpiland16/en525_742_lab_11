@@ -1,23 +1,88 @@
-<HTML>
-    <TITLE>Zybo Z7 Radio
-    </TITLE>
-    <BODY BGCOLOR="lightblue">
-    <H1>Zybo Z7 Radio Page</H1>
-    <a href="./cgi-bin/setup_all.sh">Initialize PL/Radio</a>
+<!doctype html>
+    <title>Zybo Z7 Radio
+    </title>
+
+    <script lang="javascript">
+        function log(text) {
+            if (text.indexOf('html') == -1) {
+                text = text.replace(/^\s+/, '').replaceAll("\n", "<br/>")
+            }
+            document.getElementById('log').innerHTML = text
+        }
+
+        function callURL(url, preload_info) {
+            const xhr = new XMLHttpRequest()
+            xhr.open("GET", url)
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    log(xhr.responseText);
+                } else {
+                    log('Error: ' + xhr.statusText);
+                }
+            }
+            log(preload_info)
+            xhr.send()
+        }
+
+        function initializePL() {
+            callURL("./cgi-bin/setup_all.sh", "Initializing PL...")
+        }
+
+        function runLab10() {
+            callURL("./cgi-bin/test_radio.sh", "Playing music, please wait...")
+        }
+
+        function runMilestone1() {
+            callURL("./cgi-bin/run_milestone_1", "Sending UDP packets...")
+        }
+
+        function runMilestone2() {
+            callURL("./cgi-bin/run_milestone_2", "Waiting for 10 seconds of audio samples...")
+        }
+
+        function playSong() {
+            callURL("./cgi-bin/play_song", "Playing music, please wait...")
+        }
+
+        function updateRadioTuning(e, self) {
+            e.preventDefault()
+            const formData = new FormData(self)
+            const xhr = new XMLHttpRequest()
+            xhr.open("POST", "/cgi-bin/configure_radio.py")
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    log(xhr.responseText);
+                } else {
+                    log('Error: ' + xhr.statusText);
+                }
+            }
+            log("Configuring radio...")
+            xhr.send(formData)
+        }
+    </script>
+
+    <link rel="stylesheet" href="index.css" />
+    <h1>Zybo Z7 Radio</h1>
+    <button onclick="initializePL()" style="margin: auto; display: block;">Initialize PL/Radio</button>
     <br>The above link will initialize the PL with your bitfile, configure the codec, and start the udp-streamer program
     <p>
-    <H2>Radio Tuning</H2>
-    <form action = "/cgi-bin/configure_radio.py" method = "post">
-        Fake ADC Frequency (Hz): <input type = "number" name = "adc_freq_hz"><br />
-        Radio Tune Center Frequency (Hz): <input type = "number" name = "tune_freq_hz" /> 
+    <h2>Radio Tuning</h2>
+    <form onsubmit="updateRadioTuning(event, this)">
+        Fake ADC Frequency (Hz): <input id="fakeadc" type="number" name="adc_freq_hz"><br />
+        Radio Tune Center Frequency (Hz): <input id="tuner" type="number" name="tune_freq_hz" /> 
+        <br />
         <input type="checkbox" id="streaming" name="streaming" value="streaming">
         <label for="streaming"> Enable UDP Streaming</label><br> 
-        <input type = "submit" value = "Submit" />
-        </form>
-    <H2>Milestones / Demonstrations</H2>
-    <a href="./cgi-bin/test_radio">Run Lab 10 test_radio</a><br>
-    <a href="./cgi-bin/run_milestone_1">Run Milestone 1</a>  
-    <a href="./cgi-bin/run_milestone_2">Run Milestone 2</a>  
-    </BODY>
-    </HTML>
+        <input type="submit" value="Submit"/>
+    </form>
+    <h2>Milestones / Demonstrations</h2>
+    <button onclick="runLab10()">Run Lab 10 test_radio</button>
+    <button onclick="runMilestone1()">Run Milestone 1</button>
+    <button onclick="runMilestone2()">Run Milestone 2</button>
+    <button onclick="playSong()">Play Song</button>
+
+    <h2>Script output</h2>
+    <div id="log"></div>
+    </body>
+</html>
     

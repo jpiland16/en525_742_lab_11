@@ -2,5 +2,9 @@
 echo "Content-type: text/html" # Tells the browser what kind of content to expect
 echo "" # An empty line. Mandatory, if it is missed the page content will not load
 killall stream_udp_data
+REMOTE_IP=$(echo $REMOTE_ADDR | cut -d: -f4 | cut -d\] -f1)
+echo "Your IP address is: $REMOTE_IP (this is where UDP will stream to)"
+PREVIOUS_CONTROL_SETTING=$(devmem 0x43c00008)
 ./fiforeader 480000
-./stream_udp_data 192.168.2.100 > /dev/null 2>&1 &
+devmem 0x43c00008 w $PREVIOUS_CONTROL_SETTING
+./stream_udp_data $REMOTE_IP > /dev/null 2>&1 &
