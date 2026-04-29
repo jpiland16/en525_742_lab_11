@@ -1,6 +1,7 @@
 #!/bin/bash
 echo "Content-type: text/html" # Tells the browser what kind of content to expect
 echo "" # An empty line. Mandatory, if it is missed the page content will not load
+killall stream_udp_data
 echo "<p><em>"
 echo "loading PL...<br>"
 fpgautil -b design_1_wrapper.bit.bin
