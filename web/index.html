@@ -3,6 +3,62 @@
     </title>
 
     <script lang="javascript">
+
+        let g_interval_id = -1;
+
+        function pinc_to_frequency(pinc) {
+            if (pinc > (1n << 31n)) {
+                pinc = Number(BigInt(pinc) - (1n << 32n))
+            }
+            return Math.round((pinc / (1 << 27)) * 125e6)
+        }
+
+        function enableOrDisableUi(enable) {
+            document.getElementById('streaming').disabled = !enable;
+            document.getElementById('fakeadc').disabled = !enable;
+            document.getElementById('tuner').disabled = !enable;
+            document.getElementById('submit').disabled = !enable;
+        }
+
+        function clickAutoUpdateCheckbox() {
+            let autoUpdate = document.getElementById("auto-update").checked;
+            enableOrDisableUi(!autoUpdate)
+            if (autoUpdate) {
+                g_interval_id = window.setInterval(updateUi, 100)
+            } else {
+                window.clearInterval(g_interval_id)
+            }
+        }
+
+        function updateUi() {
+            const xhr = new XMLHttpRequest()
+            xhr.open("GET", "./cgi-bin/get_control_status")
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    document.getElementById('streaming').checked = ((Number(xhr.responseText) & 2) == 2)
+                }
+            }
+            xhr.send()
+
+            const xhr1 = new XMLHttpRequest()
+            xhr1.open("GET", "./cgi-bin/get_fakeadc_pinc")
+            xhr1.onload = function () {
+                if (xhr1.status === 200) {
+                    document.getElementById('fakeadc').value = pinc_to_frequency(Number(xhr1.responseText))
+                }
+            }
+            xhr1.send()
+
+            const xhr2 = new XMLHttpRequest()
+            xhr2.open("GET", "./cgi-bin/get_tuner_pinc")
+            xhr2.onload = function () {
+                if (xhr.status === 200) {
+                    document.getElementById('tuner').value = pinc_to_frequency(Number(xhr2.responseText))
+                }
+            }
+            xhr2.send()
+        }
+
         function log(text) {
             if (text.indexOf('html') == -1) {
                 text = text.replace(/^\s+/, '').replaceAll("\n", "<br/>")
@@ -59,21 +115,29 @@
             log("Configuring radio...")
             xhr.send(formData)
         }
+
+        function bodyLoaded() {
+            document.getElementById("auto-update").checked = false
+        }
+
     </script>
 
     <link rel="stylesheet" href="index.css" />
+<body onload="bodyLoaded()">
     <h1>Zybo Z7 Radio</h1>
-    <button onclick="initializePL()" style="margin: auto; display: block;">Initialize PL/Radio</button>
-    <br>The above link will initialize the PL with your bitfile, configure the codec, and start the udp-streamer program
+    <button onclick="initializePL()" style="margin: auto; display: block; font-size: 24px">Initialize PL/Radio</button>
+    <br>The above button will initialize the PL with your bitfile, configure the codec, and start the udp-streamer program. <b>Be sure to click this button before doing anything below!</b>
     <p>
     <h2>Radio Tuning</h2>
+    <input type="checkbox" id="auto-update" name="auto-update" onclick="clickAutoUpdateCheckbox()"/>
+    <label for="auto-update">Auto-Update below values from FPGA (you must uncheck this box to edit!)</label><br/>
     <form onsubmit="updateRadioTuning(event, this)">
         Fake ADC Frequency (Hz): <input id="fakeadc" type="number" name="adc_freq_hz"><br />
         Radio Tune Center Frequency (Hz): <input id="tuner" type="number" name="tune_freq_hz" /> 
         <br />
         <input type="checkbox" id="streaming" name="streaming" value="streaming">
         <label for="streaming"> Enable UDP Streaming</label><br> 
-        <input type="submit" value="Submit"/>
+        <input type="submit" id="submit" value="Submit"/>
     </form>
     <h2>Milestones / Demonstrations</h2>
     <button onclick="runLab10()">Run Lab 10 test_radio</button>

@@ -24,7 +24,11 @@ print ("<h2>Radio Configurator</h2>")
 print ("Setting up the radio now...")
 print ("ADC Freq = %d, Tune Freq = %d" %(adc_freq_hz,tune_freq_hz))
 adc_phase_offset = int(round(adc_freq_hz * NUM_PHASE_VALUES / CPU_CLOCK_FREQUENCY))
+if adc_phase_offset < 0:
+    adc_phase_offset += (1 << 32)
 tuner_phase_offset = int(round(tune_freq_hz * NUM_PHASE_VALUES / CPU_CLOCK_FREQUENCY))
+if tuner_phase_offset < 0:
+    tuner_phase_offset += (1 << 32)
 os.system(f"devmem 0x43c00000 w {adc_phase_offset}")
 os.system(f"devmem 0x43c00004 w {tuner_phase_offset}")
 if (streaming == "streaming"):

@@ -29,6 +29,12 @@ button, input {
     margin: 5px;
 }
 
+input:disabled, input:disabled + label, button:disabled {
+    background-color: #833;
+    color: #faa;
+}
+
+
 #log {
     background-color: #333;
     margin: 10px;
